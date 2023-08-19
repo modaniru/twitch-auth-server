@@ -3,10 +3,10 @@ package service
 import (
 	"database/sql"
 
-	"github.com/modaniru/twitch-auth-server/src/client"
-	"github.com/modaniru/twitch-auth-server/src/db"
-	"github.com/modaniru/twitch-auth-server/src/dto/response"
-	"github.com/modaniru/twitch-auth-server/src/repository"
+	"github.com/modaniru/twitch-auth-server/internal/client"
+	"github.com/modaniru/twitch-auth-server/internal/db"
+	"github.com/modaniru/twitch-auth-server/internal/dto/response"
+	"github.com/modaniru/twitch-auth-server/internal/repository"
 )
 
 type UserServicer interface {

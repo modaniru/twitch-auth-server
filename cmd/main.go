@@ -9,15 +9,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/modaniru/twitch-auth-server/src/client"
-	"github.com/modaniru/twitch-auth-server/src/db"
-	"github.com/modaniru/twitch-auth-server/src/repository"
-	"github.com/modaniru/twitch-auth-server/src/server"
-	"github.com/modaniru/twitch-auth-server/src/service"
-
+	"github.com/modaniru/twitch-auth-server/internal/client"
+	"github.com/modaniru/twitch-auth-server/internal/db"
+	"github.com/modaniru/twitch-auth-server/internal/repository"
+	"github.com/modaniru/twitch-auth-server/internal/server"
+	"github.com/modaniru/twitch-auth-server/internal/service"
 	_ "github.com/lib/pq"
 )
 
+//TODO migrations
+//TODO remove sqlc
 func main() {
 	_ = godotenv.Load()
 	dns := fmt.Sprintf("postgresql://%s:%s@%s/%s?sslmode=disable", os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_HOST"), os.Getenv("DB_NAME"))

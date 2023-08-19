@@ -4,7 +4,7 @@ fmt:
 
 .PHONY: go
 go: fmt
-	go run src/main.go
+	go run cmd/main.go
 
 
 .PHONY: migrateUp

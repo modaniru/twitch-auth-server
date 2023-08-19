@@ -2,8 +2,8 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/modaniru/twitch-auth-server/src/dto/request"
-	"github.com/modaniru/twitch-auth-server/src/service"
+	"github.com/modaniru/twitch-auth-server/internal/dto/request"
+	"github.com/modaniru/twitch-auth-server/internal/service"
 )
 
 // TODO error func

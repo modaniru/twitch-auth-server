@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/modaniru/twitch-auth-server/src/db"
+	"github.com/modaniru/twitch-auth-server/internal/db"
 )
 
 type UserRepositorier interface {
