@@ -1,26 +1,24 @@
 package service
 
 import (
-	"database/sql"
-
 	"github.com/modaniru/twitch-auth-server/internal/client"
-	"github.com/modaniru/twitch-auth-server/internal/db"
-	"github.com/modaniru/twitch-auth-server/internal/dto/response"
-	"github.com/modaniru/twitch-auth-server/internal/repository"
+	"github.com/modaniru/twitch-auth-server/internal/entity"
+	"github.com/modaniru/twitch-auth-server/internal/storage"
+	"github.com/modaniru/twitch-auth-server/internal/storage/repo"
 )
 
 type UserServicer interface {
-	GetUserInformation(id int) (*response.UserResponse, error)
+	GetUserInformation(id int) (*entity.UserResponse, error)
 	CreateOrGetUser(token string) (int, error)
 }
 
 type UserService struct {
-	userRepository repository.UserRepositorier
+	userRepository storage.User
 	twitchClient   client.TwitchClienter
 }
 
 // TODO construct
-func NewUserService(userRepository repository.UserRepositorier, twitchClient client.TwitchClienter) UserServicer {
+func NewUserService(userRepository storage.User, twitchClient client.TwitchClienter) UserServicer {
 	return &UserService{
 		userRepository: userRepository,
 		twitchClient:   twitchClient,
@@ -32,20 +30,15 @@ func (u *UserService) CreateOrGetUser(token string) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	params := db.CreateUserParams{
-		UserID:   creds.UserId,
-		ClientID: creds.ClientId,
-		RegDate:  "test",
+	user, err := u.userRepository.GetUserByUserId(creds.UserId)
+	if err == repo.ErrUserNotFound {
+		return u.userRepository.CreateUser(creds.UserId, creds.ClientId)
 	}
-	user, err := u.userRepository.GetUserByUserId(params.UserID)
-	if err == sql.ErrNoRows {
-		return u.userRepository.CreateUser(&params)
-	}
-	return int(user.ID), nil
+	return user.ID, nil
 }
 
-func (u *UserService) GetUserInformation(id int) (*response.UserResponse, error) {
-	creds, err := u.userRepository.GetUser(id)
+func (u *UserService) GetUserInformation(id int) (*entity.UserResponse, error) {
+	creds, err := u.userRepository.GetUserById(id)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +56,7 @@ func (u *UserService) GetUserInformation(id int) (*response.UserResponse, error)
 	if err != nil {
 		return nil, err
 	}
-	userDto := &response.UserResponse{
+	userDto := &entity.UserResponse{
 		TwitchId:        userInfo.Id,
 		DisplayName:     userInfo.DisplayName,
 		NameColor:       userColor.Color,

@@ -2,7 +2,6 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/modaniru/twitch-auth-server/internal/dto/request"
 	"github.com/modaniru/twitch-auth-server/internal/service"
 )
 
@@ -35,8 +34,12 @@ func (m *MyServer) initRoutes() {
 	}
 }
 
+type accessToken struct {
+	Token string `json:"token"`
+}
+
 func (m *MyServer) signIn(c *gin.Context) {
-	token := new(request.AccessToken)
+	token := new(accessToken)
 	err := c.ShouldBindJSON(token)
 	if err != nil {
 		c.JSON(403, err.Error())

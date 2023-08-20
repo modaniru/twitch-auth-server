@@ -1,4 +1,11 @@
-package response
+package entity
+
+type User struct {
+	ID       int
+	UserID   string
+	ClientID string
+	RegDate  string
+}
 
 type UserResponse struct {
 	TwitchId        string
