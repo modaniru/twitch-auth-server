@@ -1,4 +1,4 @@
-package service
+package services
 
 import (
 	"github.com/modaniru/twitch-auth-server/internal/client"
@@ -7,18 +7,13 @@ import (
 	"github.com/modaniru/twitch-auth-server/internal/storage/repo"
 )
 
-type UserServicer interface {
-	GetUserInformation(id int) (*entity.UserResponse, error)
-	CreateOrGetUser(token string) (int, error)
-}
-
 type UserService struct {
 	userRepository storage.User
 	twitchClient   client.TwitchClienter
 }
 
 // TODO construct
-func NewUserService(userRepository storage.User, twitchClient client.TwitchClienter) UserServicer {
+func NewUserService(userRepository storage.User, twitchClient client.TwitchClienter) *UserService {
 	return &UserService{
 		userRepository: userRepository,
 		twitchClient:   twitchClient,

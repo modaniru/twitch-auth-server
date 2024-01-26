@@ -38,7 +38,7 @@ func (u *UserStorage) CreateUser(userId, clientId string) (int, error) {
 		}
 		return 0, fmt.Errorf("%s execute query error: %w", op, err)
 	}
-	
+
 	return id, err
 }
 func (u *UserStorage) DeleteUserById(id int) error {

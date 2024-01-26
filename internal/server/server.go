@@ -7,16 +7,14 @@ import (
 
 // TODO error func
 type MyServer struct {
-	engine      *gin.Engine
-	userService service.UserServicer
-	authService service.AuthServicer
+	engine  *gin.Engine
+	service *service.Service
 }
 
-func NewMyServer(engine *gin.Engine, userService service.UserServicer, authService service.AuthServicer) *MyServer {
+func NewMyServer(engine *gin.Engine, service *service.Service) *MyServer {
 	s := &MyServer{
-		engine:      engine,
-		userService: userService,
-		authService: authService,
+		engine:  engine,
+		service: service,
 	}
 	s.initRoutes()
 	return s
@@ -45,7 +43,7 @@ func (m *MyServer) signIn(c *gin.Context) {
 		c.JSON(403, err.Error())
 		return
 	}
-	jwtToken, err := m.authService.Auth(token.Token)
+	jwtToken, err := m.service.AuthService.Auth(token.Token)
 	if err != nil {
 		c.JSON(403, err.Error())
 		return
@@ -57,7 +55,7 @@ func (m *MyServer) signIn(c *gin.Context) {
 
 func (m *MyServer) getUser(c *gin.Context) {
 	id := c.GetInt("id")
-	user, err := m.userService.GetUserInformation(id)
+	user, err := m.service.User.GetUserInformation(id)
 	if err != nil {
 		c.JSON(403, err.Error())
 		return

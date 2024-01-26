@@ -1,4 +1,4 @@
-package service
+package services
 
 import (
 	"errors"
@@ -6,24 +6,19 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-)
-
-type AuthServicer interface {
-	// Return jwt token
-	Auth(accessToken string) (string, error)
-	Validate(jwt string) (int, error)
-}
-
-var (
-	secret []byte = []byte("secret")
+	"github.com/modaniru/twitch-auth-server/internal/service"
 )
 
 type AuthService struct {
-	userService UserServicer
+	userService service.User
+	secret      []byte
 }
 
-func NewAuthService(userService UserServicer) AuthServicer {
-	return &AuthService{userService: userService}
+func NewAuthService(userService service.User, secret string) *AuthService {
+	return &AuthService{
+		userService: userService,
+		secret:      []byte(secret),
+	}
 }
 
 func (a *AuthService) Auth(accessToken string) (string, error) {
@@ -36,7 +31,7 @@ func (a *AuthService) Auth(accessToken string) (string, error) {
 		"exp": time.Now().Add(12 * time.Hour).Unix(),
 		"iat": time.Now().Unix(),
 	})
-	return claims.SignedString(secret)
+	return claims.SignedString(a.secret)
 }
 
 func (a *AuthService) Validate(jwtToken string) (int, error) {
@@ -46,7 +41,7 @@ func (a *AuthService) Validate(jwtToken string) (int, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid token")
 		}
-		return []byte(secret), nil
+		return []byte(a.secret), nil
 	})
 	if err != nil {
 		return 0, err
